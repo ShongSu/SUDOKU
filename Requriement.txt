@@ -1,0 +1,67 @@
+The Japanese SUDOKU game is very popular. If you are not familiar with it, you can look it up on the web or in almost any daily newspaper. It is recommended that you know a little about the game before starting the assignment.  
+
+Part 1  
+
+Write a program that reads a Sudoku from a normal text file. The text file should be built by 9 rows with 9 characters each, followed by an End of Line character. Each character is either a number (1-9) or some other character to symbolize an empty box. Store the read Sudoku in a suitable data structure.  
+
+Part 2  
+
+Write an algorithm that solves the Sudoku and verifies that there is only one solution and presents it in some way (can be a console printout). Create a way of classifying the level of difficulty of the Sudoku (see the 4 attached examples)  
+
+Part 3
+
+Implement an algorithm that creates a Sudoku with a unique solution. An extra plus is: Having a suitable symmetry in the placement of the numbers (as in the examples). Being able to create Sudokus with an approximate difficulty as judged by part 2.  
+
+Part 4
+
+Add a simple User Interface for managing the above features. 
+
+Part 5 
+
+Write instructions on how to deploy the application to AWS using GitHub Action or other CI/CD tools or scripts.  
+
+
+Example:  
+Easy:  
+51.....83 
+8..416..5 
+......... 
+.985.461.  
+...9.1...  
+.642.357.  
+.........  
+6..157..4  
+78.....96  
+
+Medium:  
+7...9...3 
+2..468..1 
+..8...6..  
+.4..2..9. 
+...3.4...  
+.8..1..3.  
+..9...7..  
+5..142..6  
+8...5...2  
+
+Hard:  
+.523..6..  
+6...4...3  
+.........  
+...63..1.  
+47.....35 
+.2..58...  
+.........  
+1...9...6  
+..5..172.  
+
+Samurai:  
+5.....1.7 
+..43..5.. 
+...2...8. 
+.9.4.2...  
+4.......6 
+...1.3.5. 
+.8...4...  
+..2..67..  
+3.9.....1  
