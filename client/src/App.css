@@ -1,0 +1,205 @@
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.tabs button {
+  margin-left: 8px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  border-color: #333;
+  font-weight: 700;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel {
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+}
+
+.panelTitle {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.textarea {
+  width: 90%;
+  min-height: 200px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  margin-top: 10px;
+  color: #b00020;
+}
+
+.hint {
+  margin-top: 10px;
+  color: #666;
+  font-size: 13px;
+}
+
+.muted {
+  color: #666;
+}
+
+.pre {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 10px;
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 6px 10px;
+  font-size: 14px;
+}
+
+/* ---------- Sudoku grid ---------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(9, 36px);
+  gap: 0;
+  width: fit-content;
+
+  border: 2px solid #444;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Default cell styling */
+.cell {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+  font-size: 16px;
+
+  /* normal thin grid lines */
+  border-left: 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
+
+  user-select: none;
+}
+
+/* Remove thin borders on last col/row so outer border is clean & thick */
+.cell:nth-child(9n) {
+  border-right: none;
+}
+.cell:nth-last-child(-n + 9) {
+  border-bottom: none;
+}
+
+/* Alternate 3×3 subgrid background */
+.cell.boxA {
+  background: #ffffff;
+}
+.cell.boxB {
+  background: #f3f4f6;
+}
+
+/* Empty cells slightly lighter, keep box tone */
+.cell.empty.boxA {
+  background: #fbfbfb;
+  font-weight: 400;
+}
+.cell.empty.boxB {
+  background: #eef0f3;
+  font-weight: 400;
+}
+
+/* ✅ Internal thick lines (between 3×3 subgrids) */
+.cell.thickLeft {
+  border-left: 2px solid #444;
+}
+.cell.thickTop {
+  border-top: 2px solid #444;
+}
+
+/* Solver-filled numbers (blue highlight) */
+.cell.filled {
+  color: #1e6bd6;
+  font-weight: 700;
+  background-color: rgba(30, 107, 214, 0.08);
+}
+
+/* Original givens */
+.cell.given {
+  color: #111;
+  font-weight: 700;
+}
