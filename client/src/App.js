@@ -341,7 +341,7 @@ export default function App() {
 
             <div className="panel">
               <div className="panelTitle">Solution (returned by API)</div>
-              <Grid grid={genResult?.solution || null} />
+              <Grid grid={genResult?.solution || null} baseGrid={genResult?.input || null} />
             </div>
 
             {genResult?.puzzle && (
