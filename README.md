@@ -1,117 +1,75 @@
 # Sudoku Solver & Generator
 
-A full-stack Sudoku application that can **read, solve, validate, generate, and classify Sudoku puzzles**, with a simple **React-based UI** and a **Node.js backend**.
+This project is a **full‑stack Sudoku application** consisting of:
 
-This project is designed as a technical assessment and demonstrates:
-- Algorithm design (backtracking, MRV heuristic)
-- Uniqueness verification
-- Difficulty classification
-- Puzzle generation
-- Clean API design
-- Simple but usable frontend UI
+- A **Node.js backend API** for solving and generating Sudoku puzzles
+- A **React frontend** for visualization and manual interaction
+- Optional **Docker Compose** setup for easy backend execution
+- **GitHub Actions CI/CD** for automated deployment to AWS
+
+The project is designed to be easy to run locally for evaluation, while also
+demonstrating production‑ready deployment practices.
+
+---
+
+## Project Overview
+
+### Backend (Node.js / Express)
+- Parse Sudoku puzzles from plain text
+- Solve puzzles and verify uniqueness
+- Classify difficulty based on solving complexity
+- Generate new puzzles with a unique solution
+- Exposes a REST API
+
+### Frontend (React)
+- Upload Sudoku puzzle files
+- Visualize puzzles and solutions
+- Highlight auto‑filled values
+- Trigger solve/generate operations via API
 
 ---
 
 ## Project Structure
 
 ```
-SUDOKU/
 ├── client/                 # React frontend (CRA)
 │   ├── public/             # Static assets (example .txt puzzles)
 │   ├── src/                # React source code
 │   ├── package.json
 │   └── README.md
-│
-├── server/                 # Node.js / Express backend
-│   ├── __tests__/          # Jest tests
-│   ├── sudoku/             # Core Sudoku logic
-│   │   ├── solver.js       # Solve + uniqueness check
-│   │   ├── generator.js    # Puzzle generator
-│   │   ├── difficulty.js   # Difficulty classification
-│   │   └── validator.js    # Input validation
-│   ├── index.js            # Express entry point
-│   ├── package.json
-│   └── README.md
-│
+├── server/                 # Node.js backend
+│   ├── index.js
+│   ├── solver/
+│   └── tests/
 ├── examples/               # Sample Sudoku text files
-├── README.md               # ← You are here
-└── Requirement.txt         # Assignment description
+├── Dockerfile              # Backend Docker image
+├── docker-compose.yml      # Backend Docker Compose setup
+├── README-backend-docker-compose.md
+└── README.md               # (this file)
 ```
 
 ---
 
-## Features
+## Quick start ##  
 
-### Backend (Node.js)
-- Read Sudoku puzzles from plain text files (9×9 format)
-- Validate initial grid (rows, columns, 3×3 boxes)
-- Solve Sudoku using backtracking + MRV heuristic
-- Detect **unique vs multiple solutions**
-- Collect solving statistics:
-  - visited nodes
-  - guesses
-  - max recursion depth
-- Classify difficulty:
-  - Easy / Medium / Hard / Samurai
-- Generate Sudoku puzzles with:
-  - Unique solution
-  - Optional 3×3 symmetry
-  - Approximate difficulty target
+If you prefer not to run the project locally, you can view a fully working
+production deployment on AWS at the link below:
 
-### Frontend (React)
-- Upload `.txt` Sudoku files to populate the puzzle
-- Manually edit puzzle text
-- Visual 9×9 grid with:
-  - 3×3 subgrid shading
-  - Thick subgrid borders
-- Solve puzzle on demand
-- Highlight solver-filled numbers in **blue**
-- Generate new puzzles by difficulty
-- Display puzzle, solution, and statistics
+https://d31p3xd2k0i2c7.cloudfront.net/
+
+Local setup instructions are provided below.
 
 ---
 
-## Sudoku File Format
+## Running the Frontend (Local Development)
 
-Each puzzle is defined as **9 lines × 9 characters**:
+The frontend is optional and provided mainly for visualization and manual testing.
 
-- `1–9` → fixed numbers
-- `.` or any other character → empty cell
+### Prerequisites
+- Node.js 18+
+- npm
 
-Example:
-```
-53..7....
-6..195...
-.98....6.
-8...6...3
-4..8.3..1
-7...2...6
-.6....28.
-...419..5
-....8..79
-```
-
----
-
-## Getting Started
-
-### Backend Setup
-
-```bash
-cd server
-npm install
-npm start
-```
-
-Backend runs on:
-
-```
-http://localhost:4000
-```
-
----
-
-### Frontend Setup
+### Steps
 
 ```bash
 cd client
@@ -119,84 +77,139 @@ npm install
 npm start
 ```
 
-Frontend runs on:
+The React application will be available at:
 
 ```
 http://localhost:3000
 ```
 
-The React app uses a proxy to communicate with the backend, so API calls are made via `/api/...`.
+The frontend expects the backend API to be available at:
 
----
-
-## 🔌 API Endpoints
-
-### Solve a Sudoku
-```http
-POST /api/solve
-Content-Type: application/json
 ```
-
-Request body:
-```json
-{
-  "text": "53..7....\n6..195...\n..."
-}
+http://localhost:4000
 ```
 
 ---
 
-### Generate a Sudoku
-```http
-GET /api/generate?level=Medium&symmetry=true
-```
+## Running the Backend
 
-Query parameters:
-- `level`: Easy | Medium | Hard | Samurai
-- `symmetry`: true / false
+You can run the backend **either locally** or **using Docker Compose**.
 
 ---
 
-## Difficulty Classification
+### Option 1: Run Backend Locally (Without Docker)
 
-Difficulty is estimated based on solver behavior rather than human tactics.
-
-Current heuristic:
-```
-score = visited_nodes + guesses × weight
-```
-
-Thresholds:
-| Level    | Score Range |
-|---------|-------------|
-| Easy    | < 300       |
-| Medium  | < 1000      |
-| Hard    | < 5000      |
-| Samurai | ≥ 5000      |
-
----
-
-## Testing
-
-Backend unit tests are written with **Jest**.
+#### Prerequisites
+- Node.js 18+
+- npm
 
 ```bash
 cd server
-npm test
+npm install
+npm start
+```
+
+The API will start on:
+
+```
+http://localhost:4000
 ```
 
 ---
 
-## Technology Stack
+### Option 2: Run Backend with Docker Compose (Recommended)
 
-- **Frontend**: React (Create React App)
-- **Backend**: Node.js, Express
-- **Testing**: Jest
-- **Algorithms**: Backtracking, MRV heuristic
-- **Language**: JavaScript (ES6)
+Docker Compose provides the most reliable way to run the backend without
+installing Node.js dependencies locally.
+
+```bash
+docker compose up --build
+```
+
+The backend API will be available at:
+
+```
+http://localhost:4000
+```
+
+📄 **Detailed Docker Compose instructions and curl examples**  
+See: [README-backend-docker-compose.md](./README-backend-docker-compose.md)
+
+---
+
+## Troubleshooting Local Setup
+
+If you encounter issues running the project locally (e.g. environment
+differences, dependency conflicts, or platform-specific issues), you may
+refer to the production deployment below. This deployment represents a
+known working configuration of both the frontend and backend:
+
+https://d31p3xd2k0i2c7.cloudfront.net/
+
+---
+
+## Production Deployment (AWS)
+
+This project is deployed on AWS using the following services:
+
+- **Frontend**: S3 + CloudFront
+- **Backend**: ECS Fargate + Application Load Balancer
+- **Images**: Amazon ECR
+
+The frontend and backend are served under the same CloudFront domain,
+with `/api/*` requests proxied to the backend.
+
+---
+
+## CI/CD with GitHub Actions
+
+The repository includes a GitHub Actions workflow that automatically deploys
+changes when code is pushed to the `main` branch.
+
+### CI/CD Responsibilities
+
+- Build the React frontend
+- Upload frontend assets to S3
+- Invalidate CloudFront cache
+- Build backend Docker image
+- Push image to Amazon ECR
+- Register a new ECS task definition revision
+- Perform a rolling update of the ECS service
+
+### Authentication
+
+- GitHub Actions uses **AWS OIDC**
+- No long‑lived AWS credentials are stored
+- Access is restricted to this repository and branch
+
+### Trigger
+
+```text
+git push origin main
+```
+
+This will automatically deploy the latest frontend and backend changes.
+
+---
+
+## Notes for Reviewers
+
+- The backend API can be run independently via Docker Compose
+- The frontend is optional and not required for evaluation
+- No database or external dependencies are required
+- Sample Sudoku input files are provided under `examples/`
+
+---
+
+## Summary
+
+- **Backend**: Node.js API (local or Docker Compose)
+- **Frontend**: React (local development)
+- **Deployment**: AWS + GitHub Actions
+- **Focus**: Clean API design, algorithm correctness, and production‑ready workflows
 
 ---
 
 ## License
 
-Provided for practive and evaluation purposes.
+Provided for evaluation purposes.
