@@ -1,4 +1,4 @@
-name: AWS OIDC Test
+name: Deploy to AWS (S3+CloudFront + ECR+ECS)
 
 on:
   push:
@@ -9,17 +9,113 @@ permissions:
   contents: read
 
 jobs:
-  oidc-test:
+  deploy:
     runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+      ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+      ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
+      ECS_TASK_FAMILY: ${{ secrets.ECS_TASK_FAMILY }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # ---------- Backend tests ----------
+      - name: Install server deps
+        working-directory: server
+        run: npm ci
+
+      - name: Run server tests
+        working-directory: server
+        run: npm test
+
+      # ---------- Build frontend ----------
+      - name: Install client deps
+        working-directory: client
+        run: npm ci
+
+      - name: Build client
+        working-directory: client
+        run: npm run build
+
+      # ---------- AWS auth via OIDC ----------
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: ca-central-1
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Verify identity
-        run: aws sts get-caller-identity
+      # ---------- Deploy frontend ----------
+      - name: Sync frontend to S3
+        run: aws s3 sync client/build s3://$S3_BUCKET --delete
+
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*"
+
+      # ---------- Build & push backend image ----------
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & push Docker image (linux/amd64)
+        working-directory: server
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_REGISTRY="$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
+          IMAGE_TAG="${GITHUB_SHA::7}"
+          IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+          docker build --platform linux/amd64 -t "$IMAGE_URI" .
+          docker push "$IMAGE_URI"
+
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+      # ---------- Update ECS ----------
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition "$ECS_TASK_FAMILY" \
+            --query taskDefinition > taskdef.json
+
+      - name: Render new task definition (replace image)
+        run: |
+          node -e "
+            const fs=require('fs');
+            const td=JSON.parse(fs.readFileSync('taskdef.json','utf8'));
+            const keep=[
+              'family','taskRoleArn','executionRoleArn','networkMode',
+              'containerDefinitions','volumes','placementConstraints',
+              'requiresCompatibilities','cpu','memory','runtimePlatform'
+            ];
+            const out={};
+            for(const k of keep){ if(td[k]!=null) out[k]=td[k]; }
+
+            // Replace the first container image. If you have multiple containers, adjust this logic.
+            out.containerDefinitions[0].image = process.env.IMAGE_URI;
+
+            fs.writeFileSync('taskdef.rendered.json', JSON.stringify(out,null,2));
+          "
+
+      - name: Register new task definition revision
+        run: |
+          TASKDEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://taskdef.rendered.json \
+            --query taskDefinition.taskDefinitionArn --output text)
+          echo "TASKDEF_ARN=$TASKDEF_ARN" >> $GITHUB_ENV
+
+      - name: Update ECS service (rolling deploy)
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --task-definition "$TASKDEF_ARN" \
+            --force-new-deployment
