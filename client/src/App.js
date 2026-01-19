@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "./App.css";
+const API_BASE =
+  process.env.REACT_APP_API_BASE_URL?.replace(/\/$/, "") || "";
+
 
 function parseGridFromTextClient(text) {
   console.log()
@@ -106,7 +109,7 @@ export default function App() {
     setSolveError("");
     setSolveResult(null);
     try {
-      const res = await fetch("/api/solve", {
+      const res = await fetch(`${API_BASE}/api/solve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
@@ -127,7 +130,7 @@ export default function App() {
     setGenResult(null);
     try {
       // GET /api/generate?level=...&symmetry=...
-      const url = `/api/generate?level=${encodeURIComponent(
+      const url = `${API_BASE}/api/generate?level=${encodeURIComponent(
         level
       )}&symmetry=${encodeURIComponent(String(symmetry))}`;
       const res = await fetch(url);
