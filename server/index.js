@@ -109,9 +109,9 @@ app.get("/api/generate", (req, res) => {
       puzzle: result.puzzle,
       solution: result.solution,
       givens: result.givens,
+      blanks: result.blanks,
       difficulty: result.difficulty,
       stats: result.stats,
-      input: result.puzzle,
     });
   } catch (e) {
     return res.status(500).json({

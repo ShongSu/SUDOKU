@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 const API_BASE =
   process.env.REACT_APP_API_BASE_URL?.replace(/\/$/, "") || "";
 
 
 function parseGridFromTextClient(text) {
-  console.log()
   const lines = text.replace(/\r/g, "").trimEnd().split("\n");
   if (lines.length !== 9) throw new Error("Sudoku must have exactly 9 lines.");
 
@@ -144,6 +143,16 @@ export default function App() {
     }
   }
 
+  useEffect(() => {
+    setSolveError("");
+    try {
+      const g = parseGridFromTextClient(text);
+      setPuzzleGrid(g);
+    } catch (err) {
+      setPuzzleGrid(null);
+    }
+  }, [text]);
+
   return (
     <div className="app">
       <header className="header">
@@ -256,7 +265,7 @@ export default function App() {
               <Grid
                 grid={solveResult?.solution || null}
                 baseGrid={solveResult?.input || null}
-              />{" "}
+              />
             </div>
 
             {solveResult?.solution && (
@@ -344,7 +353,7 @@ export default function App() {
 
             <div className="panel">
               <div className="panelTitle">Solution (returned by API)</div>
-              <Grid grid={genResult?.solution || null} baseGrid={genResult?.input || null} />
+              <Grid grid={genResult?.solution || null} baseGrid={genResult?.puzzle || null} />
             </div>
 
             {genResult?.puzzle && (
