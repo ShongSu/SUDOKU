@@ -27,6 +27,8 @@ describe("solveWithUniqueness", () => {
     expect(res.solution[8][0]).not.toBe(0);
   });
 
+  // TODO: re-enable this test after fixing the solver to detect unsolvable puzzles
+  // should validate the inpute before solving anyway. now if grid is invalid, solver may loop infinitely.
   test.skip("detects unsolvable puzzle (no solution)", () => {
     // same row has duplicate 5 -> impossible
     const grid = Array.from({ length: 9 }, () => Array(9).fill(0));
