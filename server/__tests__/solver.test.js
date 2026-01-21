@@ -39,12 +39,10 @@ describe("solveWithUniqueness", () => {
     expect(res.solution).toBe(null);
   });
 
-  test.skip("can report multiple solutions by early stopping at >1", () => {
-    // 一个“非常空”的盘面通常会多解；我们只要求它能返回 solutions>1
+  test("can report multiple solutions by early stopping at >1", () => {
     const grid = Array.from({ length: 9 }, () => Array(9).fill(0));
     const res = solveWithUniqueness(grid);
 
-    // 注意：你的 solver 设计是超过1解就停，所以这里期望 >=2
     expect(res.solutions).toBeGreaterThan(1);
     expect(res.unique).toBe(false);
   });

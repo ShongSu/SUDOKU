@@ -338,4 +338,4 @@ function countBlanks(grid) {
   return 81 - countGivens(grid);
 }
 
-module.exports = { generateSudoku };
+module.exports = { generateSudoku, getCandidates, pickNextCellMRV };
