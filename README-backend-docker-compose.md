@@ -39,7 +39,7 @@ The application is implemented in **Node.js (Express)** and packaged as a Docker
 ├── server
 │   ├── index.js
 │   ├── src/
-│   └── tests/
+│   └── __tests__/
 └── README.md
 ```
 
