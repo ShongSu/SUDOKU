@@ -38,7 +38,7 @@ The application is implemented in **Node.js (Express)** and packaged as a Docker
 ├── docker-compose.yml
 ├── server
 │   ├── index.js
-│   ├── sudoku/
+│   ├── src/
 │   └── tests/
 └── README.md
 ```

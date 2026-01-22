@@ -201,6 +201,55 @@ This will automatically deploy the latest frontend and backend changes.
 
 ---
 
+## Notes for Reviewers
+
+- The backend API can be run independently via Docker Compose
+- The frontend is optional and not required for evaluation
+- No database or external dependencies are required
+- Sample Sudoku input files are provided under `examples/`
+
+---
+
+## Future Work
+
+### 1. Infrastructure as Code (IaC)
+- Design and codify the initial infrastructure architecture.
+- Introduce **Terraform** to manage AWS resources (e.g. S3, CloudFront, ECR, ECS, IAM) in a declarative and reproducible way.
+- Improve infrastructure consistency, auditability, and environment parity.
+
+### 2. Environment-aware CI/CD with GitHub Actions
+- Currently, the CI/CD pipeline is triggered **only on pushes to the `main` branch**.
+- Introduce **separate environments**:
+  - **Dev environment**
+    - Every push to the `dev` branch triggers deployment to the dev environment.
+  - **Production environment**
+    - Deployment is triggered **only on release (tag-based)**, not on every push.
+- This better reflects real-world deployment practices and reduces production risk.
+
+### 3. Selective Builds for Frontend and Backend
+- Currently, every push triggers a **full build** for both frontend and backend.
+- Optimize by:
+  - Splitting workflows for frontend and backend
+  - Detecting file changes and building only affected components
+- This will significantly reduce CI execution time and resource usage.
+
+### 4. More Accurate Sudoku Difficulty Classification
+- Current difficulty classification is based on **solver algorithm complexity**.
+- This may not always align with **human-perceived difficulty**.
+- Future improvements include:
+  - Incorporating human-solving heuristics
+  - Combining multiple metrics (e.g. technique depth, branching factor)
+- This will provide a more realistic difficulty rating.
+
+### 5. Improved UI Feedback for Invalid Sudoku Input
+- Currently, invalid Sudoku input is shown via a **generic error message**.
+- Planned UI enhancements:
+  - Highlight conflicting numbers directly on the grid (e.g. red cells)
+  - Provide clearer visual feedback for faster error identification
+- This will improve usability and overall user experience.
+
+---
+
 ## Summary
 
 - **Backend**: Node.js API (local or Docker Compose)

@@ -1,4 +1,4 @@
-const { solveWithUniqueness } = require("../sudoku/solver");
+const { solveWithUniqueness } = require("../src/solver");
 
 describe("solveWithUniqueness", () => {
   test("solves a standard puzzle with a unique solution", () => {
@@ -27,6 +27,8 @@ describe("solveWithUniqueness", () => {
     expect(res.solution[8][0]).not.toBe(0);
   });
 
+  // TODO: re-enable this test after fixing the solver to detect unsolvable puzzles
+  // should validate the inpute before solving anyway. now if grid is invalid, solver may loop infinitely.
   test.skip("detects unsolvable puzzle (no solution)", () => {
     // same row has duplicate 5 -> impossible
     const grid = Array.from({ length: 9 }, () => Array(9).fill(0));
@@ -39,12 +41,10 @@ describe("solveWithUniqueness", () => {
     expect(res.solution).toBe(null);
   });
 
-  test.skip("can report multiple solutions by early stopping at >1", () => {
-    // 一个“非常空”的盘面通常会多解；我们只要求它能返回 solutions>1
+  test("can report multiple solutions by early stopping at >1", () => {
     const grid = Array.from({ length: 9 }, () => Array(9).fill(0));
     const res = solveWithUniqueness(grid);
 
-    // 注意：你的 solver 设计是超过1解就停，所以这里期望 >=2
     expect(res.solutions).toBeGreaterThan(1);
     expect(res.unique).toBe(false);
   });

@@ -1,4 +1,4 @@
-const { parseGridFromText } = require("../sudoku/io");
+const { parseGridFromText } = require("../src/io");
 
 describe("parseGridFromText", () => {
   test("parses 9x9 sudoku with '.' as empty", () => {
