@@ -156,7 +156,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <div className="title">Sudoku Solver and Generator</div>
+        <div className="title">Sudoku Solver and Generator V2</div>
         <div className="tabs">
           <button
             className={tab === "solve" ? "active" : ""}
