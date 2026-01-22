@@ -39,8 +39,8 @@ demonstrating production‑ready deployment practices.
 │   └── README.md
 ├── server/                 # Node.js backend
 │   ├── index.js
-│   ├── solver/
-│   └── tests/
+│   ├── src/
+│   └── __tests__/
 ├── examples/               # Sample Sudoku text files
 ├── Dockerfile              # Backend Docker image
 ├── docker-compose.yml      # Backend Docker Compose setup
