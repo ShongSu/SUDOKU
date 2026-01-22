@@ -1,4 +1,4 @@
-const { solveWithUniqueness } = require("../sudoku/solver");
+const { solveWithUniqueness } = require("../src/solver");
 
 describe("solveWithUniqueness", () => {
   test("solves a standard puzzle with a unique solution", () => {

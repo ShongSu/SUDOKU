@@ -1,4 +1,4 @@
-const { validateInitialGrid } = require("../sudoku/validate");
+const { validateInitialGrid } = require("../src/validate");
 
 describe("validateInitialGrid", () => {
   test("accepts a valid partial grid", () => {

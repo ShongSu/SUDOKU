@@ -1,5 +1,6 @@
 const { solveWithUniqueness } = require("./solver");
 const { classifyDifficulty } = require("./difficulty");
+const { pickNextCellMRV } = require("./utils");
 
 /**
  * Generate a Sudoku puzzle with a unique solution and approximate difficulty.
@@ -272,45 +273,7 @@ function fillGridRandom(grid) {
   return false;
 }
 
-// MRV: choose the empty cell with the fewest candidates
-function pickNextCellMRV(grid) {
-  let best = null;
-  for (let r = 0; r < 9; r++) {
-    for (let c = 0; c < 9; c++) {
-      if (grid[r][c] !== 0) continue;
-      const cand = getCandidates(grid, r, c);
-      if (cand.length === 0) return { dead: true };
-      if (!best || cand.length < best.cand.length) {
-        best = { r, c, cand };
-        if (cand.length === 1) return best;
-      }
-    }
-  }
-  return best; // null means solved
-}
 
-function getCandidates(grid, r, c) {
-  if (grid[r][c] !== 0) return [];
-
-  const used = new Set();
-
-  for (let i = 0; i < 9; i++) {
-    if (grid[r][i] !== 0) used.add(grid[r][i]);
-    if (grid[i][c] !== 0) used.add(grid[i][c]);
-  }
-
-  const br = Math.floor(r / 3) * 3;
-  const bc = Math.floor(c / 3) * 3;
-  for (let rr = br; rr < br + 3; rr++) {
-    for (let cc = bc; cc < bc + 3; cc++) {
-      if (grid[rr][cc] !== 0) used.add(grid[rr][cc]);
-    }
-  }
-
-  const cand = [];
-  for (let v = 1; v <= 9; v++) if (!used.has(v)) cand.push(v);
-  return cand;
-}
 
 /* --------------------------- utilities --------------------------- */
 
@@ -338,4 +301,4 @@ function countBlanks(grid) {
   return 81 - countGivens(grid);
 }
 
-module.exports = { generateSudoku, getCandidates, pickNextCellMRV };
+module.exports = { generateSudoku };

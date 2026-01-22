@@ -1,4 +1,4 @@
-const { getCandidates, pickNextCellMRV } = require("../sudoku/generator");
+const { getCandidates, pickNextCellMRV } = require("../src/utils");
 
 // helper: deep clone for safety in tests
 const clone = (g) => g.map((r) => r.slice());
@@ -107,7 +107,7 @@ describe("pickNextCellMRV()", () => {
 
   test("tie-breaking: if multiple cells have same cand length, returns the first encountered in scan order", () => {
     const grid = Array.from({ length: 9 }, () => Array(9).fill(0));
-    
+
     const pick = pickNextCellMRV(grid);
     expect(pick.r).toBe(0);
     expect(pick.c).toBe(0); // first cell in row-major scan

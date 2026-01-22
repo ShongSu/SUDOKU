@@ -1,9 +1,9 @@
 const express = require("express");
-const { parseGridFromText } = require("./sudoku/io");
-const { validateInitialGrid } = require("./sudoku/validate");
-const { solveWithUniqueness } = require("./sudoku/solver");
-const { classifyDifficulty } = require("./sudoku/difficulty");
-const { generateSudoku } = require("./sudoku/generator");
+const { parseGridFromText } = require("./src/io");
+const { validateInitialGrid } = require("./src/validate");
+const { solveWithUniqueness } = require("./src/solver");
+const { classifyDifficulty } = require("./src/difficulty");
+const { generateSudoku } = require("./src/generator");
 
 const fs = require("fs");
 const path = require("path");
@@ -23,50 +23,33 @@ app.use(express.json({ limit: "1mb" }));
 
 app.get("/health", (_, res) => res.json({ ok: true }));
 
-// app.get("/api/grid", (req, res) => {
+// Upload a .txt file and solve it
+// app.post("/api/solve-file", upload.single("file"), (req, res) => {
 //   try {
-//     const grid = parseGridFromText(easyText);
-//     console.log("easyText", easyText);
-//     console.log("validateInitialGrid", typeof validateInitialGrid);
+//     if (!req.file)
+//       return res.status(400).json({ ok: false, error: "No file uploaded." });
+
+//     const text = req.file.buffer.toString("utf-8");
+//     const grid = parseGridFromText(text);
 
 //     const v = validateInitialGrid(grid);
 //     if (!v.ok) return res.status(400).json(v);
 
-//     return res.json({ ok: true, grid });
+//     const result = solveWithUniqueness(grid);
+
+//     return res.json({
+//       ok: true,
+//       input: grid,
+//       ...result,
+
+//       difficulty: classifyDifficulty(result.stats),
+//     });
 //   } catch (e) {
 //     return res
 //       .status(400)
 //       .json({ ok: false, error: e?.message || "Bad request" });
 //   }
 // });
-
-// Upload a .txt file and solve it
-app.post("/api/solve-file", upload.single("file"), (req, res) => {
-  try {
-    if (!req.file)
-      return res.status(400).json({ ok: false, error: "No file uploaded." });
-
-    const text = req.file.buffer.toString("utf-8");
-    const grid = parseGridFromText(text);
-
-    const v = validateInitialGrid(grid);
-    if (!v.ok) return res.status(400).json(v);
-
-    const result = solveWithUniqueness(grid);
-
-    return res.json({
-      ok: true,
-      input: grid,
-      ...result,
-
-      difficulty: classifyDifficulty(result.stats),
-    });
-  } catch (e) {
-    return res
-      .status(400)
-      .json({ ok: false, error: e?.message || "Bad request" });
-  }
-});
 
 app.post("/api/solve", (req, res) => {
   try {
